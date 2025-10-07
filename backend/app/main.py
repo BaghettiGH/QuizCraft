@@ -1,13 +1,6 @@
-# app/main.py
 from fastapi import FastAPI
-from app.core.database import Base, engine
-from app.models.user import User
+from app.api import users
 
-app = FastAPI()
+app = FastAPI(title="QuizCraft API")
 
-# Create all tables
-Base.metadata.create_all(bind=engine)
-
-@app.get("/")
-def root():
-    return {"message": "Database setup complete!"}
+app.include_router(users.router, prefix="/api", tags=["users"])

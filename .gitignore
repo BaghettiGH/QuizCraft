@@ -21,7 +21,7 @@ venv/
 env/
 *.egg-info/
 *.egg
-
+.env*
 # --- IDE / Editor ---
 .vscode/
 .idea/

@@ -18,12 +18,10 @@ export default function RootLayout({
       <body className="bg-gray-50 text-gray-900 flex flex-col min-h-screen">
         <Navbar />
 
-        {/* Main content */}
         <main className="flex-grow container mx-auto px-6 py-10">
           {children}
         </main>
 
-        {/* Footer */}
         <footer className="bg-gray-100 py-4 text-center text-sm text-gray-600">
           © {new Date().getFullYear()} QuizCraft — Crafted for Learners
         </footer>
