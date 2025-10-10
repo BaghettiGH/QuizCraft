@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from app.services.supabase_client import get_supabase
+from app.schemas.user import UserCreate
 
 router = APIRouter()
 
@@ -10,8 +11,8 @@ def get_users():
     return response.data
 
 @router.post("/users")
-def create_user(user:dict):
+def create_user(user:UserCreate):
     supabase = get_supabase()
-    response = supabase.table("User").insert(user).execute()
+    response = supabase.table("User").insert(user.model_dump()).execute()
     print(response)
     return response.data
