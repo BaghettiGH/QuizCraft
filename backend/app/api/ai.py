@@ -3,10 +3,11 @@ from pydantic import BaseModel
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+from app.core.config import settings
 
 load_dotenv()
 router = APIRouter()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAI(api_key=settings.openai_api_key)
 
 class NoteInput(BaseModel):
     text: str
