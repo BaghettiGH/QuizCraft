@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.api import users, chat_session, message, progress, question, quiz, study_material, user_answer
-from app.api import ai
+from app.api import ai, explain
 app = FastAPI(title="QuizCraft API")
 
 
@@ -13,3 +13,4 @@ app.include_router(study_material.router, prefix="/api", tags=["study_material"]
 app.include_router(user_answer.router, prefix="/api", tags=["answer"])
 app.include_router(users.router, prefix="/api", tags=["users"])
 app.include_router(ai.router, prefix="/ai", tags=["AI"])
+app.include_router(explain.router, prefix="/ai", tags=["AI Explain"])
