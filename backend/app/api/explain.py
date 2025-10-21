@@ -1,9 +1,13 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import List
-import openai
+from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv
 
 router = APIRouter()
+client = OpenAI()
 
 class Message(BaseModel):
     role: str
@@ -14,8 +18,8 @@ class ExplainRequest(BaseModel):
 
 @router.post("/explain")
 async def explain_mode(request: ExplainRequest):
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a friendly tutor who explains things clearly for students."},
             *[{"role": msg.role, "content": msg.content} for msg in request.messages]
