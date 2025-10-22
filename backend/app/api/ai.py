@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import os
 import re
@@ -17,30 +17,46 @@ if settings.GOOGLE_API_KEY:
 
 def generate_quiz_from_text(text: str):
     prompt = f"""
-    Generate 10 quiz questions and their correct answers from the following text.
-    Format them as a valid JSON array with objects containing 'question' and 'answer' keys.
-
-    Text:
+    Generate 5 multiple-choice questions (MCQs) based on the following text:
     {text}
+
+    Format your response strictly as valid JSON like this:
+    [
+      {{
+        "question": "Question text?",
+        "options": ["Option A", "Option B", "Option C", "Option D"],
+        "answer": "Option B"
+      }},
+      ...
+    ]
     """
-    if settings.ENV == "production":
-        response = openai_client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.7,
-        )
-        raw_output = response.choices[0].message.content.strip()
-    else:
-        model = genai.GenerativeModel("gemini-2.5-flash")
-        response = model.generate_content(prompt)
-        raw_output = response.text.strip()
-
-    cleaned = re.sub(r"^```json|```$", "", raw_output, flags=re.MULTILINE).strip()
-        
     try:
-        quiz_data = json.loads(cleaned)
-    except json.JSONDecodeError:
-        quiz_data = [{"question": "Failed to parse quiz output", "answer": raw_output}]
+        if settings.ENV == "production":
+            response = openai_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7,
+            )
+            raw_output = response.choices[0].message.content.strip()
+        else:
+            model = genai.GenerativeModel("gemini-2.5-flash")
+            response = model.generate_content(prompt)
+            raw_output = response.text.strip()
 
-    return {"quiz": quiz_data}
-    
+        json_match = re.search(r"\[.*\]", raw_output, re.DOTALL)
+        if json_match:
+            json_str = json_match.group(0)
+        else:
+            json_str = raw_output 
+
+        quiz_data = json.loads(json_str)
+        return {"quiz": quiz_data}
+            
+        
+    except json.JSONDecodeError:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to parse AI response as valid JSON. Raw output:\n{raw_output}",
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
