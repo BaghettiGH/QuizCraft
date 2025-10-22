@@ -42,5 +42,5 @@ def generate_quiz_from_text(text: str):
     except json.JSONDecodeError:
         quiz_data = [{"question": "Failed to parse quiz output", "answer": raw_output}]
 
-        return {"quiz": quiz_data}
+    return {"quiz": quiz_data}
     

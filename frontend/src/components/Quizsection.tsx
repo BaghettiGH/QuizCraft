@@ -1,82 +1,77 @@
-// app/components/Quizsection.tsx
 "use client";
-
-import Link from "next/link";
 import React, { useState } from "react";
 
-interface Question {
-    question: string;
-    answer: string;
+interface QuizQuestion {
+  question: string;
+  options: string[];
+  answer: string;
 }
+
 interface QuizProps {
-    quizData: Question[];
+  quizData: QuizQuestion[];
 }
 
-export default function Quizsection({ quizData }: QuizProps){
-    const [current, setCurrent] = useState(0);
-    const [userAnswer, setUserAnswer] = useState("");
-    const [score, setScore] = useState(0);
-    const [showResult, setShowResult] = useState(false);
-    const [feedback, setFeedback] = useState("");
+export default function Quiz({ quizData }: QuizProps) {
+  const [current, setCurrent] = useState(0);
+  const [score, setScore] = useState(0);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [showResult, setShowResult] = useState(false);
 
-    const handleSubmit = () => {
-        const correct = quizData[current].answer.trim().toLowerCase();
-        const user = userAnswer.trim().toLowerCase();
+  const handleAnswer = (option: string) => {
+    setSelected(option);
+    if (option === quizData[current].answer) {
+      setScore(score + 1);
+    }
 
-        if (user === correct){
-            setScore(score + 1);
-            setFeedback("Correct!");
+    setTimeout(() => {
+      if (current + 1 < quizData.length) {
+        setCurrent(current + 1);
+        setSelected(null);
+      } else {
+        setShowResult(true);
+      }
+    }, 800);
+  };
 
-        } else {
-            setFeedback(`Incorrect. Correct answer: ${quizData[current].answer}`);
-
-        }
-        setTimeout(() => {
-            setFeedback("");
-            setUserAnswer("");
-
-            if (current + 1 < quizData.length){
-                setCurrent(current + 1);
-            } else {
-                setShowResult(true);
-            }
-        }, 1500);
-    };
-    if (showResult) {
+  if (showResult) {
     return (
-      <div className="text-center p-6">
+      <div className="text-center p-8 bg-gray-800 rounded-2xl shadow-lg">
         <h2 className="text-2xl font-bold mb-4">Quiz Complete!</h2>
-        <p className="text-lg">
-          You scored {score} out of {quizData.length}
+        <p className="text-lg mb-2">You scored:</p>
+        <p className="text-3xl font-bold text-green-400">
+          {score} / {quizData.length}
         </p>
       </div>
     );
   }
 
+  const question = quizData[current];
+
   return (
-    <div className="max-w-xl mx-auto bg-white/10 p-6 rounded-2xl shadow-lg text-white">
+    <div className="p-6 bg-gray-800 rounded-2xl shadow-lg text-white">
       <h2 className="text-xl font-semibold mb-4">
         Question {current + 1} of {quizData.length}
       </h2>
-      <p className="mb-4">{quizData[current].question}</p>
+      <p className="text-lg mb-6">{question.question}</p>
 
-      <input
-        type="text"
-        value={userAnswer}
-        onChange={(e) => setUserAnswer(e.target.value)}
-        className="w-full p-2 rounded bg-gray-800 text-white mb-3"
-        placeholder="Type your answer..."
-      />
-
-      <button
-        onClick={handleSubmit}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-      >
-        Submit
-      </button>
-
-      {feedback && <p className="mt-3 text-sm">{feedback}</p>}
+      <div className="grid grid-cols-1 gap-3">
+        {question.options.map((option, index) => (
+          <button
+            key={index}
+            onClick={() => handleAnswer(option)}
+            disabled={selected !== null}
+            className={`p-3 rounded-xl border transition-all duration-200 ${
+              selected === option
+                ? option === question.answer
+                  ? "bg-green-500 border-green-400"
+                  : "bg-red-500 border-red-400"
+                : "bg-gray-700 hover:bg-gray-600 border-gray-600"
+            }`}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
     </div>
   );
-
 }
