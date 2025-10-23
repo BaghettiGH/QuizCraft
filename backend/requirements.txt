@@ -8,3 +8,5 @@ passlib[bcrypt]==1.7.4
 pydantic==2.7.4
 python-dotenv==1.0.1
 supabase
+pydantic-settings
+google-generativeai
