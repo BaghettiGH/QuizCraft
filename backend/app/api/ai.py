@@ -60,3 +60,4 @@ def generate_quiz_from_text(text: str):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
