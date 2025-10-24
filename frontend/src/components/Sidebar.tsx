@@ -3,10 +3,30 @@
 
 import Link from "next/link";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+interface ChatSession {
+  session_id: string;
+  user_id?: number;
+  title?: string;
+  mode?: string;
+  created_at?: string;
+  last_active_at?: string;
+}
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
+  const [chats, setChats] = useState<ChatSession[]>([]);
+
+  useEffect(() => {
+    async function fetchChats() {
+      const userId = "USER_ID";
+      const res = await fetch(`${process.env.SUPABASE_URL}/chats?user_id=USER_ID`);
+      const data = await res.json();
+      setChats(data);
+    }
+    fetchChats();
+  }, []);
 
   return (
     <div>
@@ -98,18 +118,25 @@ export default function Sidebar() {
           }}>
             Chats
           </div>
-          <Link href="#" style={{
-            display: "block",
-            color: "#b3b3b3",
-            textDecoration: "none",
-            fontWeight: 400,
-            fontSize: 15,
-            marginBottom: 12,
-            opacity: open ? 1 : 0,
-            transition: "opacity 0.2s",
-            pointerEvents: open ? "auto" : "none",
-          }}>temporary, testing</Link>
-          {/* Previous chats will go here in the future */}
+          {chats.length > 0 ? (
+    chats.map((chat) => (
+      <Link
+        key={chat.session_id}
+        href={`/chat/${chat.session_id}`}
+        style={{
+          display: "block",
+          color: "#b3b3b3",
+          textDecoration: "none",
+          fontSize: 15,
+          marginBottom: 12,
+        }}
+      >
+        {chat.title || "Untitled Chat"}
+      </Link>
+    ))
+  ) : (
+    <p style={{ color: "#777" }}>No chats yet</p>
+  )}
         </div>
       </div>
     </div>

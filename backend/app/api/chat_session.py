@@ -5,9 +5,9 @@ from app.schemas.chat_session import SessionCreate
 router = APIRouter()
 
 @router.get("/chat_sessions")
-def get_session():
+def get_session(user_id:str):
     supabase = get_supabase()
-    response = supabase.table("Chat_Session").select("*").execute()
+    response = supabase.table("Chat_Session").select("*").eq("user_id", user_id).order("last_active_at", desc=True).execute()
     return response.data
 
 @router.post("/chat_sessions")

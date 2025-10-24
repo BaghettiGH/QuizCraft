@@ -2,7 +2,7 @@
 import "../styles/globals.css";
 import Link from "next/link";
 
-export const metadata = {
+const metadata = {
   title: "QuizCraft",
   description: "Generate and play interactive quizzes from your notes",
 };
