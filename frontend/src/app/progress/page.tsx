@@ -8,9 +8,7 @@ export default function ProgressList() {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   const chats: string[] = [
-    'ITS120L GitHub',
-    'Access Control Lists',
-    'Lexical Analysis'
+    'Example Chat Placeholder'
   ];
 
   return (
