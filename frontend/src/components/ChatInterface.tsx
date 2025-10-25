@@ -10,7 +10,7 @@ import { messageApi, aiApi } from "../services/api";
 import QuizComponent from "./QuizComponent";
 
 export default function ChatInterface() {
-  const userId = "user-123"; // Replace with actual auth user ID
+  const userId = 1; // Replace with actual auth user ID
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);

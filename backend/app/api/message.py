@@ -1,18 +1,29 @@
-from fastapi import APIRouter
-from app.services.supabase_client import get_supabase
-from app.schemas.message import MessageCreate
+from fastapi import APIRouter, HTTPException, Query
+from app.models.schemas import MessageCreate, MessageResponse
+from app.services.databases import db
+from typing import List
 
-router = APIRouter()
+router = APIRouter(prefix="/api/messages", tags=["messages"])
 
-@router.get("/messages")
-def get_message():
-    supabase = get_supabase()
-    response = supabase.table("Message").select("*").execute()
-    return response.data
+@router.get("")
+async def list_messages(session_id: str = Query(..., description="Session ID")):
+    """Get all messages for a session"""
+    try:
+        messages = db.get_session_messages(session_id)
+        return {"messages": messages}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/messages")
-def create_message(message:MessageCreate):
-    supabase = get_supabase()
-    response = supabase.table("Message").insert(message.model_dump()).execute()
-    print(response)
-    return response.data
+@router.post("", response_model=dict)
+async def create_message(message: MessageCreate):
+    """Create a new message"""
+    try:
+        new_message = db.create_message(
+            session_id=message.session_id,
+            sender=message.sender,
+            content=message.content,
+            quiz_data=message.quiz_data
+        )
+        return {"message": new_message}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
