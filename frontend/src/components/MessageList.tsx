@@ -19,9 +19,9 @@ export const MessageList = ({ messages, loading, hasSession, onSuggestionClick, 
         <div className="inline-block bg-blue-500/10 p-6 rounded-2xl mb-4">
           <Sparkles className="w-16 h-16 text-blue-400 mx-auto" />
         </div>
-        <h2 className="text-2xl font-bold text-white mb-2">
-          {hasSession ? "Start a conversation" : "Create a new chat to begin"}
-        </h2>
+        <h1 className ="text-2xl font-bold text-white mb-2">
+            QuizCraft
+        </h1>
         <p className="text-blue-300 mb-4">
           Ask me to explain any concept, or request a quiz to test your knowledge!
         </p>
