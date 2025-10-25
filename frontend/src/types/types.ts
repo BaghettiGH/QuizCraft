@@ -1,0 +1,33 @@
+export interface QuizQuestion {
+  question: string;
+  options: string[];
+  answer: string;
+}
+
+export interface QuizData {
+  questions: QuizQuestion[];
+  topic: string;
+}
+
+export interface Message {
+  role: "user" | "assistant";
+  content: string;
+  quiz?: QuizData;
+}
+export interface ChatSession {
+    session_id: string;
+    user_id: string;
+    title: string;
+    mode: string;
+    created_at: string;
+    last_active_at: string;
+}
+
+export interface SidebarProps {
+  sessions: ChatSession[];
+  currentSessionId: string | null;
+  loading: boolean;
+  onSelectSession: (id: string) => void;
+  onCreateSession: () => void;
+  onDeleteSession: (id: string, e: React.MouseEvent) => void;
+}

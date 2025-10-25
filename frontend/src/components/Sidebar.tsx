@@ -1,144 +1,65 @@
-// app/components/Sidebar.tsx
-"use client";
+import { Plus, MessageSquare, Trash2, Loader2 } from "lucide-react";
+import { SidebarProps} from "../types/types";
 
-import Link from "next/link";
-
-import React, { useState, useEffect } from "react";
-
-interface ChatSession {
-  session_id: string;
-  user_id?: number;
-  title?: string;
-  mode?: string;
-  created_at?: string;
-  last_active_at?: string;
-}
-
-export default function Sidebar() {
-  const [open, setOpen] = useState(false);
-  const [chats, setChats] = useState<ChatSession[]>([]);
-
-  useEffect(() => {
-    async function fetchChats() {
-      const userId = "USER_ID";
-      const res = await fetch(`${process.env.SUPABASE_URL}/chats?user_id=USER_ID`);
-      const data = await res.json();
-      setChats(data);
-    }
-    fetchChats();
-  }, []);
-
-  return (
-    <div>
-      {/* Toggle Button */}
+export const Sidebar = ({
+  sessions,
+  currentSessionId,
+  loading,
+  onSelectSession,
+  onCreateSession,
+  onDeleteSession,
+}: SidebarProps) => (
+  <div className="flex flex-col h-full">
+    <div className="p-4 border-b border-blue-500/20">
       <button
-        onClick={() => setOpen((prev) => !prev)}
-        style={{
-          position: "fixed",
-          top: 20,
-          left: 20,
-          zIndex: 1001,
-          background: "#16182F",
-          color: "#fff",
-          border: "none",
-          borderRadius: "4px",
-          width: 40,
-          height: 40,
-          cursor: "pointer",
-        }}
-        aria-label="Toggle sidebar"
+        onClick={onCreateSession}
+        className="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all"
       >
-        {/* Hamburger icon */}
-        <span style={{ fontSize: 24 }}>&#9776;</span>
+        <Plus className="w-5 h-5" />
+        <span>New Chat</span>
       </button>
-
-      {/* Sidebar Box */}
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          height: "100vh",
-          width: open ? 240 : 60,
-          background: "#16182F",
-          transition: "width 0.3s cubic-bezier(0.4,0,0.2,1)",
-          zIndex: 1000,
-          display: "flex",
-          flexDirection: "column",
-          paddingTop: 32,
-          boxSizing: "border-box",
-        }}
-      >
-        {/* Sidebar Navigation */}
-        <nav style={{
-          paddingLeft: open ? 24 : 0,
-          paddingRight: open ? 24 : 0,
-          marginTop: 48,
-        }}>
-            
-          <Link href="#" style={{
-            display: "block",
-            color: "#fff",
-            textDecoration: "none",
-            fontWeight: 600,
-            fontSize: 16,
-            marginBottom: 16,
-            opacity: open ? 1 : 0,
-            transition: "opacity 0.2s",
-            pointerEvents: open ? "auto" : "none",
-          }}>New chat</Link>
-
-          <Link href="#" style={{
-            display: "block",
-            color: "#fff",
-            textDecoration: "none",
-            fontWeight: 600,
-            fontSize: 16,
-            marginBottom: 32,
-            opacity: open ? 1 : 0,
-            transition: "opacity 0.2s",
-            pointerEvents: open ? "auto" : "none",
-          }}>Progress</Link>
-
-        </nav>
-        {/* Chats Section */}
-        <div style={{
-          marginTop: 64,
-          paddingLeft: open ? 24 : 0,
-          paddingRight: open ? 24 : 0,
-        }}>
-          <div style={{
-            color: "#fff",
-            fontWeight: 700,
-            fontSize: 15,
-            marginBottom: 12,
-            opacity: open ? 1 : 0,
-            transition: "opacity 0.2s",
-            pointerEvents: open ? "auto" : "none",
-          }}>
-            Chats
-          </div>
-          {chats.length > 0 ? (
-    chats.map((chat) => (
-      <Link
-        key={chat.session_id}
-        href={`/chat/${chat.session_id}`}
-        style={{
-          display: "block",
-          color: "#b3b3b3",
-          textDecoration: "none",
-          fontSize: 15,
-          marginBottom: 12,
-        }}
-      >
-        {chat.title || "Untitled Chat"}
-      </Link>
-    ))
-  ) : (
-    <p style={{ color: "#777" }}>No chats yet</p>
-  )}
-        </div>
-      </div>
     </div>
-  );
-}
+
+    <div className="flex-1 overflow-y-auto p-3 space-y-2">
+      {loading ? (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="w-6 h-6 text-blue-400 animate-spin" />
+        </div>
+      ) : sessions.length === 0 ? (
+        <div className="text-center py-8 text-blue-300/50 text-sm">
+          No chat sessions yet
+        </div>
+      ) : (
+        sessions.map((session) => (
+          <div
+            key={session.session_id}
+            onClick={() => onSelectSession(session.session_id)}
+            className={`group p-3 rounded-xl cursor-pointer transition-all ${
+              currentSessionId === session.session_id
+                ? 'bg-blue-600/20 border-blue-500/40 border'
+                : 'bg-slate-800/50 border border-transparent hover:bg-slate-800 hover:border-blue-500/20'
+            }`}
+          >
+            <div className="flex items-start gap-3">
+              <MessageSquare className="w-4 h-4 text-blue-400 mt-1 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-blue-100 truncate">
+                  {session.title || "New Chat"}
+                </p>
+                <p className="text-xs text-blue-400/60 mt-1">
+                  {new Date(session.last_active_at || session.created_at).toLocaleDateString()}
+                </p>
+              </div>
+              <button
+                onClick={(e) => onDeleteSession(session.session_id, e)}
+                className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-500/20 rounded transition-all"
+              >
+                <Trash2 className="w-4 h-4 text-red-400" />
+              </button>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+);

@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Trophy, MoreVertical, Download, Eye } from "lucide-react";
 import { exportToPDF } from "../components/utils/pdfUtils";
 import "highlight.js/styles/github-dark.css";
-import { QuizData } from "./types";
+import { QuizData } from "../types/types";
 
 interface QuizComponentProps {
   quizData: QuizData;
