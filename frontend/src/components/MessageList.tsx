@@ -58,7 +58,15 @@ export const MessageList = ({ messages, loading, hasSession, onSuggestionClick, 
                   </div>
                 </div>
               </div>
-              {msg.quiz && <QuizComponent quizData={msg.quiz} />}
+              {msg.quiz && (
+                <QuizComponent
+                  quizData={msg.quiz}
+                  onComplete={(score: number, total:number) => {
+                    console.log(`✅ User completed quiz on ${msg.quiz?.topic}: ${score}/${total}`);
+                    // Later: you can save to Supabase or display progress bar here
+                  }}
+                />
+              )}
             </div>
           )}
         </div>

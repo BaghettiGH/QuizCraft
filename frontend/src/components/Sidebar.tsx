@@ -12,7 +12,10 @@ export const Sidebar = ({
   <div className="flex flex-col h-full">
     <div className="p-4 border-b border-blue-500/20">
       <button
-        onClick={onCreateSession}
+        onClick={(e) => {
+          e.stopPropagation();
+          onCreateSession();
+        }}
         className="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all"
       >
         <Plus className="w-5 h-5" />

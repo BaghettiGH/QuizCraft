@@ -21,7 +21,7 @@ class SessionResponse(BaseModel):
 
 class MessageCreate(BaseModel):
     session_id: str
-    sender: str  # "user" or "assistant"
+    sender: str 
     content: str
     quiz_data: Optional[str] = None  # JSON string
 
