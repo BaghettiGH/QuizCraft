@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api import users, message, progress, question, quiz, study_material, user_answer, sessions
+from app.api import users, message, progress, question, quiz, study_material, user_answer, sessions, auth
 from app.api import ai, explain
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -35,6 +35,7 @@ app.include_router(message.router)
 app.include_router(quiz.router)
 app.include_router(question.router)
 app.include_router(user_answer.router)
+app.include_router(auth.router)
 @app.get("/")
 async def root():
     return {"message": "QuizCraft API is running"}

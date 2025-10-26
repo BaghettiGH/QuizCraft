@@ -2,6 +2,21 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+class SignupRequest(BaseModel):
+    email: str
+    password: str
+    first_name: str
+    last_name: str
+
+class AuthResponse(BaseModel):
+    access_token: str
+    token_type: str
+    user: dict
+
 class SessionCreate(BaseModel):
     user_id: int
     title: str = "New Chat"

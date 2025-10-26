@@ -186,6 +186,26 @@ class DatabaseService:
             .eq("Question.quiz_id", quiz_id) \
             .execute()
         return response.data
+    def create_user_profile(self, user_id: str, email: str, first_name: str, last_name: str) -> dict:
+        """Create user profile in User table after signup"""
+        data = {
+            "email": email,
+            "first_name": first_name,
+            "last_name": last_name
+        }
+        response = self.client.table("User") \
+            .insert(data) \
+            .execute()
+        return response.data[0]
+    
+    def get_user_by_email(self, email: str) -> Optional[dict]:
+        """Get user by email"""
+        response = self.client.table("User") \
+            .select("*") \
+            .eq("email", email) \
+            .execute()
+        return response.data[0] if response.data else None
 
+    
 # Singleton instance
 db = DatabaseService()

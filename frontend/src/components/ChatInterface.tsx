@@ -6,11 +6,13 @@ import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
 import { useSessions } from "../hooks/useSessions";
 import { useMessages } from "../hooks/useMessages";
+import { useAuth } from  "../context/AuthContext";
 import { messageApi, aiApi } from "../services/api";
 import QuizComponent from "./QuizComponent";
 
 export default function ChatInterface() {
-  const userId = 1; // Replace with actual auth user ID
+  const { user } = useAuth(); 
+  const userId = user?.id ? String(user.id) : null;
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
