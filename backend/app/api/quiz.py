@@ -72,3 +72,53 @@ def generate_quiz(input: NoteInput):
     quiz_data = generate_quiz_from_text(input.text)
     return {"quiz": quiz_data}
 
+@router.get("/session/{session_id}")
+async def get_quiz_by_session(session_id: str):
+    try:
+        print(f"Fetching quiz for session_id: {session_id}")
+        supabase = get_supabase()
+        response = supabase.table("Quiz").select("*").eq("session_id", session_id).execute()
+        print("Supabase raw response:", response)
+
+        if not response.data:
+            print("⚠️ No quiz found for that session_id")
+            raise HTTPException(status_code=404, detail="Quiz not found")
+
+        quiz = response.data[0]
+        return {"quiz": quiz}
+
+    except Exception as e:
+        import traceback
+        print(f"Error fetching quiz by session: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail="Failed to fetch quiz")
+    
+@router.get("/{quiz_id}/questions")
+async def get_quiz_questions(quiz_id: int):
+    try:
+        supabase = get_supabase()
+        response = supabase.table("Question").select("*").eq("quiz_id", quiz_id).order("id", asc=True).execute()
+
+        if not response.data:
+            raise HTTPException(status_code=404, detail="No questions found")
+
+        return {"questions": response.data}
+
+    except Exception as e:
+        print(f"Error fetching questions for quiz {quiz_id}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch questions")
+    
+@router.get("/{quiz_id}/answers")
+async def get_quiz_answers(quiz_id: int):
+    try:
+        supabase = get_supabase()
+        response = supabase.table("Answer").select("*").eq("quiz_id", quiz_id).order("id", asc=True).execute()
+
+        if not response.data:
+            raise HTTPException(status_code=404, detail="No answers found")
+
+        return {"answers": response.data}
+
+    except Exception as e:
+        print(f"Error fetching answers for quiz {quiz_id}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch answers")
