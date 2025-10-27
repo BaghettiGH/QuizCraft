@@ -62,8 +62,7 @@ export const messageApi = {
         quiz_data: quizData ? JSON.stringify(quizData) : null,
       }),
     });
-    const errorData = await res.text();
-    if (!res.ok) throw new Error("Failed to save message", { cause: errorData });
+    if (!res.ok) throw new Error("Failed to save message");
     return res.json();
   },
 };
