@@ -18,7 +18,7 @@ class AuthResponse(BaseModel):
     user: dict
 
 class SessionCreate(BaseModel):
-    user_id: int
+    user_id: str
     title: str = "New Chat"
     mode: str = "chat"
 
@@ -28,7 +28,7 @@ class SessionUpdate(BaseModel):
 
 class SessionResponse(BaseModel):
     session_id: str
-    user_id: int
+    user_id: str
     title: str
     mode: str
     created_at: datetime

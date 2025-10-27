@@ -3,7 +3,6 @@ from app.services.supabase_client import get_supabase
 from app.schemas.quiz import QuizCreate
 from app.api.ai import generate_quiz_from_text
 from pydantic import BaseModel
-router = APIRouter()
 
 class NoteInput(BaseModel):
     text: str

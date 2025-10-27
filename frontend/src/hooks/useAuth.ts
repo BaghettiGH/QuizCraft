@@ -21,7 +21,7 @@ export function useAuth(): UseAuthReturn {
     try {
       const response = await AuthService.login({ email, password });
       AuthService.saveToken(response.access_token);
-      router.push('/dashboard');
+      router.push('/chat');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {

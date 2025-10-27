@@ -59,14 +59,14 @@ export const MessageList = ({ messages, loading, hasSession, onSuggestionClick, 
                 </div>
               </div>
               {msg.quiz && (
-                <QuizComponent
-                  quizData={msg.quiz}
-                  onComplete={(score: number, total:number) => {
-                    console.log(`✅ User completed quiz on ${msg.quiz?.topic}: ${score}/${total}`);
-                    // Later: you can save to Supabase or display progress bar here
-                  }}
-                />
-              )}
+              <QuizComponent 
+                quizData={msg.quiz}
+                sessionId={msg.quiz.sessionId}  // Now it will have sessionId
+                onComplete={(score:number, total:number) => {
+                  console.log(`Quiz completed: ${score}/${total}`);
+                }}
+              />
+            )}
             </div>
           )}
         </div>

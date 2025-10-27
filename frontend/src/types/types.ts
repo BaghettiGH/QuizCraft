@@ -4,11 +4,27 @@ export interface QuizQuestion {
   question: string;
   options: string[];
   answer: string;
+  correct_answer: string;
+}
+
+export interface UserAnswer {
+  question_id: string;
+  answer: string;
+  is_correct: boolean;
+}
+
+export interface QuizResult {
+  quiz_id: string;
+  score: number;
+  total_questions: number;
+  is_finished: boolean;
+  answers: UserAnswer[];
 }
 
 export interface QuizData {
-  questions: QuizQuestion[];
+  questions: any[];
   topic: string;
+  sessionId?: string;  
 }
 
 export interface Message {
@@ -63,7 +79,7 @@ export interface LoginFormProps {
 }
 
 export interface User {
-  id: number;
+  id: string;
   auth_id: string;
   email: string;
   first_name?: string;

@@ -6,7 +6,7 @@ from typing import List
 router = APIRouter(prefix="/api/sessions", tags=["sessions"])
 
 @router.get("")
-async def list_sessions(user_id: int = Query(..., description="User ID")):
+async def list_sessions(user_id: str = Query(..., description="User UUID")):
     """Get all sessions for a user"""
     try:
         sessions = db.get_user_sessions(user_id)

@@ -9,6 +9,7 @@ export const useSessions = (userId: string) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if(!userId) return;
     loadSessions();
   }, [userId]);
 

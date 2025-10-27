@@ -1,18 +1,18 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { Menu, X, Sparkles } from "lucide-react";
-import { Sidebar } from "./Sidebar";
-import { MessageList } from "./MessageList";
-import { ChatInput } from "./ChatInput";
+import { Sidebar } from "../components/Sidebar";
+import { MessageList } from "../components/MessageList";
+import { ChatInput } from "../components/ChatInput";
 import { useSessions } from "../hooks/useSessions";
 import { useMessages } from "../hooks/useMessages";
-import { useAuth } from  "../context/AuthContext";
 import { messageApi, aiApi } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 import QuizComponent from "./QuizComponent";
 
 export default function ChatInterface() {
-  const { user } = useAuth(); 
-  const userId = user?.id ? String(user.id) : null;
+  const { user } = useAuth();
+  const userId = user?.id;
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -26,7 +26,7 @@ export default function ChatInterface() {
     createSession,
     deleteSession,
     updateTitle,
-  } = useSessions(userId);
+  } = useSessions(userId ?? "");
 
   const { messages, setMessages, addMessage } = useMessages(currentSessionId);
 
@@ -52,29 +52,27 @@ export default function ChatInterface() {
     setLoading(true);
 
     try {
-
-        if (!sessionId) {
-            console.error("No active chat session.");
-            return;
-            }
-
-      await messageApi.create(sessionId, "user", currentInput);
+      await messageApi.create(sessionId!, "user", currentInput);
 
       if (messages.length === 0) {
         const title = currentInput.slice(0, 50) + (currentInput.length > 50 ? "..." : "");
-        await updateTitle(sessionId, title);
+        await updateTitle(sessionId!, title);
       }
 
       const data = await aiApi.explain(updatedMessages);
       
       const assistantMessage = {
-        role: "assistant" as const,
-        content: data.answer,
-        quiz: data.quiz ? { questions: data.quiz, topic: data.quiz_topic || "this topic" } : undefined,
-      };
-
+      role: "assistant" as const,
+      content: data.answer,
+      quiz: data.quiz ? { 
+        questions: data.quiz,
+        topic: data.quiz_topic || "this topic",
+        sessionId: sessionId ?? undefined // ADD THIS - pass the current session ID
+      } : undefined,
+    };
+    console.log("assistantMessage", assistantMessage);
       await messageApi.create(
-        sessionId,
+        sessionId!,
         "assistant",
         data.answer,
         assistantMessage.quiz
