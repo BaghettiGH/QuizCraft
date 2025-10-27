@@ -8,11 +8,12 @@ interface MessageListProps {
   messages: Message[];
   loading: boolean;
   hasSession: boolean;
+  currentSessionId?: string;
   onSuggestionClick: (text: string) => void;
   QuizComponent: any;
 }
 
-export const MessageList = ({ messages, loading, hasSession, onSuggestionClick, QuizComponent }: MessageListProps) => (
+export const MessageList = ({ messages, loading, hasSession, currentSessionId, onSuggestionClick, QuizComponent }: MessageListProps) => (
   <div className="max-w-4xl mx-auto space-y-6">
     {messages.length === 0 && (
       <div className="text-center py-20">
@@ -61,7 +62,7 @@ export const MessageList = ({ messages, loading, hasSession, onSuggestionClick, 
               {msg.quiz && (
               <QuizComponent 
                 quizData={msg.quiz}
-                sessionId={msg.quiz.sessionId}  // Now it will have sessionId
+                sessionId={msg.quiz.sessionId || currentSessionId} 
                 onComplete={(score:number, total:number) => {
                   console.log(`Quiz completed: ${score}/${total}`);
                 }}

@@ -78,13 +78,13 @@ class QuestionResponse(BaseModel):
     correct_answer: str
 
 class UserAnswerCreate(BaseModel):
-    question_id: str
+    question_id: int
     answer: str
     is_correct: bool
 
 class UserAnswerResponse(BaseModel):
     user_answer_id: str
-    question_id: str
+    question_id: int
     answer: str
     is_correct: bool
     created_at: datetime

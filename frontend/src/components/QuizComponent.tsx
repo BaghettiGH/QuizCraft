@@ -9,6 +9,7 @@ interface QuizComponentProps {
   quizData: {
     questions: QuizQuestion[];
     topic: string;
+    sessionId?: string;
   };
   sessionId: string;
   onComplete?: (score: number, total: number) => void;
@@ -26,7 +27,7 @@ export default function QuizComponent({
   const [showResult, setShowResult] = useState(false);
   const [showReview, setShowReview] = useState(false);
   const [quizId, setQuizId] = useState<string | null>(null);
-  const [questionIds, setQuestionIds] = useState<string[]>([]);
+  const [questionIds, setQuestionIds] = useState<number[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [quizStarted, setQuizStarted] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -88,7 +89,13 @@ export default function QuizComponent({
 
     setSelected(answer);
     const question = quizData.questions[current];
-    const isCorrect = answer === question.correct_answer;
+    const correctAnswer = question.correct_answer || question.answer;  // Handle both field names
+    const isCorrect = answer === correctAnswer;
+
+    console.log("Question:", question.question);
+    console.log("User answer:", answer);
+    console.log("Correct answer:", correctAnswer);
+    console.log("Is correct:", isCorrect);
 
     if (isCorrect) {
       setScore(score + 1);
@@ -141,10 +148,10 @@ export default function QuizComponent({
 
   if (!quizStarted) {
     return (
-      <div className="p-6 bg-gradient-to-br from-blue-900/50 to-blue-900/50 border border-blue-500/30 rounded-2xl">
+      <div className="p-6 bg-gradient-to-br from-purple-900/50 to-blue-900/50 border border-purple-500/30 rounded-2xl">
         <div className="flex items-center justify-center gap-3">
-          <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
-          <p className="text-blue-300">Loading quiz...</p>
+          <Loader2 className="w-5 h-5 text-purple-400 animate-spin" />
+          <p className="text-purple-300">Loading quiz...</p>
         </div>
       </div>
     );
@@ -152,7 +159,7 @@ export default function QuizComponent({
 
   if (showReview) {
     return (
-      <div className="p-6 bg-gradient-to-br from-blue-900/50 to-blue-900/50 border border-blue-500/30 rounded-2xl">
+      <div className="p-6 bg-gradient-to-br from-purple-900/50 to-blue-900/50 border border-purple-500/30 rounded-2xl">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-2xl font-bold text-white">Quiz Review</h3>
           <div className="flex gap-2">
@@ -180,7 +187,7 @@ export default function QuizComponent({
             return (
               <div
                 key={idx}
-                className="p-5 bg-slate-800/50 rounded-xl border-2 border-blue-500/20"
+                className="p-5 bg-slate-800/50 rounded-xl border-2 border-purple-500/20"
               >
                 <div className="flex items-start gap-3 mb-4">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
@@ -210,13 +217,13 @@ export default function QuizComponent({
                             }`}
                           >
                             <div className="flex items-center gap-2">
-                              <span className="font-mono text-blue-300">
+                              <span className="font-mono text-purple-300">
                                 {String.fromCharCode(65 + optIdx)}.
                               </span>
                               <span className={`flex-1 ${
                                 isCorrectAnswer || isUserAnswer
                                   ? "text-white"
-                                  : "text-blue-200"
+                                  : "text-purple-200"
                               }`}>
                                 {opt}
                               </span>
@@ -233,7 +240,7 @@ export default function QuizComponent({
                     </div>
 
                     {!isCorrect && (
-                      <div className="text-sm text-blue-300 bg-slate-700/30 p-3 rounded-lg">
+                      <div className="text-sm text-purple-300 bg-slate-700/30 p-3 rounded-lg">
                         <strong>Correct answer:</strong> {q.correct_answer}
                       </div>
                     )}
@@ -250,7 +257,7 @@ export default function QuizComponent({
   if (showResult) {
     const percentage = Math.round((score / quizData.questions.length) * 100);
     return (
-      <div className="p-6 bg-gradient-to-br from-blue-900/50 to-blue-900/50 border border-blue-500/30 rounded-2xl relative">
+      <div className="p-6 bg-gradient-to-br from-purple-900/50 to-blue-900/50 border border-blue-500/30 rounded-2xl relative">
         {/* Three-dot menu */}
         <div className="absolute top-4 right-4" ref={menuRef}>
           <button
@@ -307,9 +314,10 @@ export default function QuizComponent({
   }
 
   const question = quizData.questions[current];
+  const correctAnswer = question.correct_answer || question.answer;  // Handle both field names
 
   return (
-    <div className="p-6 bg-gradient-to-br from-blue-900/50 to-blue-900/50 border border-blue-500/30 rounded-2xl relative">
+    <div className="p-6 bg-gradient-to-br from-purple-900/50 to-blue-900/50 border border-blue-500/30 rounded-2xl relative">
       {/* Three-dot menu for active quiz */}
       <div className="absolute top-4 right-4" ref={menuRef}>
         <button
@@ -350,7 +358,7 @@ export default function QuizComponent({
       <div className="grid grid-cols-1 gap-3">
         {question.options.map((option, index) => {
           const isSelected = selected === option;
-          const isCorrect = option === question.correct_answer;
+          const isCorrect = option === correctAnswer;  // Use correctAnswer variable
           const showFeedback = selected !== null;
 
           return (
@@ -381,8 +389,8 @@ export default function QuizComponent({
                   {String.fromCharCode(65 + index)}
                 </div>
                 <span className="flex-1">{option}</span>
-                {showFeedback && isCorrect && <span className="text-green-400"></span>}
-                {showFeedback && isSelected && !isCorrect && <span className="text-red-400"></span>}
+                {showFeedback && isCorrect && <span className="text-green-400">✓</span>}
+                {showFeedback && isSelected && !isCorrect && <span className="text-red-400">✗</span>}
               </div>
             </button>
           );

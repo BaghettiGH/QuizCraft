@@ -67,9 +67,9 @@ export default function ChatInterface() {
       quiz: data.quiz ? { 
         questions: data.quiz,
         topic: data.quiz_topic || "this topic",
-        sessionId: sessionId ?? undefined // ADD THIS - pass the current session ID
+        sessionId: currentSessionId  // ADD THIS LINE
       } : undefined,
-    };
+  };
     console.log("assistantMessage", assistantMessage);
       await messageApi.create(
         sessionId!,

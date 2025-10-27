@@ -90,7 +90,6 @@ export const quizApi = {
         no_of_questions: numberOfQuestions,
       }),
     });
-  
     if (!res.ok) throw new Error("Failed to create quiz");
     return res.json();
   },
@@ -99,9 +98,11 @@ export const quizApi = {
   storeQuestions: async (quizId: string, questions: QuizQuestion[]) => {
     const questionsData = questions.map(q => ({
       quiz_id: quizId,
-      quiz_question: String(q.question),
-      correct_answer: String(q.correct_answer || ""),
+      quiz_question: q.question,
+      correct_answer: q.correct_answer || q.answer,  // Handle both field names
     }));
+
+    console.log("Storing questions:", questionsData);  // Debug log
 
     const res = await fetch(`${API_BASE}/api/questions/batch`, {
       method: "POST",
@@ -113,22 +114,28 @@ export const quizApi = {
   },
 
   // Save user answer
-  saveAnswer: async (questionId: string, answer: string, isCorrect: boolean) => {
+  saveAnswer: async (questionId: number, answer: string, isCorrect: boolean) => {
+    console.log("questionId:", questionId);
+    console.log("answer:", answer);
+    console.log("isCorrect:", isCorrect);
     const res = await fetch(`${API_BASE}/api/answers`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        question_id: String(questionId),
-        answer: String(answer || ""),
-        is_correct: Boolean(isCorrect),
+        question_id: questionId,
+        answer: String(answer),
+        is_correct: isCorrect,
       }),
     });
-    if (!res.ok) throw new Error("Failed to save answer");
-    return res.json();
+    if (!res.ok) {
+    const text = await res.text();
+    console.error("Backend rejected payload:", text);
+    throw new Error("Failed to save answer");
+  }
   },
 
   // Complete quiz (update score and finish status)
-  completeQuiz: async (quizId: string, score: number) => { 
+  completeQuiz: async (quizId: string, score: number) => {
     const res = await fetch(`${API_BASE}/api/quizzes/${quizId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
