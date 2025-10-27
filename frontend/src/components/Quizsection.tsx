@@ -22,6 +22,7 @@ export default function Quiz({ quizData }: QuizProps) {
     if (option === quizData[current].answer) {
       setScore(score + 1);
     }
+    // timeout
 
     setTimeout(() => {
       if (current + 1 < quizData.length) {
