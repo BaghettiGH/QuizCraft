@@ -149,19 +149,46 @@ export const quizApi = {
   },
 
   // Get quiz with questions
-  getQuizWithQuestions: async (quizId: string) => {
-    const [quizRes, questionsRes] = await Promise.all([
-      fetch(`${API_BASE}/api/quizzes/${quizId}`),
-      fetch(`${API_BASE}/api/questions?quiz_id=${quizId}`),
-    ]);
-
-    if (!quizRes.ok || !questionsRes.ok) {
-      throw new Error("Failed to load quiz data");
+  async getQuizBySession(sessionId: string) {
+    try {
+      const response = await fetch(`${API_BASE}/api/quizzes/session/${sessionId}`);
+      if (!response.ok) {
+        if (response.status === 404) {
+          return null; // No quiz found for this session
+        }
+        throw new Error('Failed to fetch quiz');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching quiz by session:', error);
+      throw error;
     }
-
-    const quiz = await quizRes.json();
-    const questions = await questionsRes.json();
-
-    return { quiz: quiz.quiz, questions: questions.questions };
   },
+  async getQuizQuestions(quizId: string) {
+    try {
+      const response = await fetch(`/api/quizzes/${quizId}/questions`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch quiz questions');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching quiz questions:', error);
+      throw error;
+    }
+  },
+
+  async getQuizAnswers(quizId: string) {
+    try {
+      const response = await fetch(`/api/quizzes/${quizId}/answers`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch quiz answers');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching quiz answers:', error);
+      throw error;
+    }
+  },
+
+
 };
