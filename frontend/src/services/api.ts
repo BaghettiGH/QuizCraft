@@ -166,7 +166,7 @@ export const quizApi = {
   },
   async getQuizQuestions(quizId: string) {
     try {
-      const response = await fetch(`/api/quizzes/${quizId}/questions`);
+      const response = await fetch(`${API_BASE}/api/quizzes/${quizId}/questions`);
       if (!response.ok) {
         throw new Error('Failed to fetch quiz questions');
       }
@@ -179,7 +179,7 @@ export const quizApi = {
 
   async getQuizAnswers(quizId: string) {
     try {
-      const response = await fetch(`/api/quizzes/${quizId}/answers`);
+      const response = await fetch(`${API_BASE}/api/quizzes/${quizId}/answers`);
       if (!response.ok) {
         throw new Error('Failed to fetch quiz answers');
       }

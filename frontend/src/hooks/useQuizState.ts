@@ -65,6 +65,7 @@ export const useQuizState = (
     }
   };
 
+
   const handleAnswer = async (answer: string) => {
     if (selected !== null) return;
 
