@@ -101,7 +101,7 @@ export const quizApi = {
     const questionsData = questions.map(q => ({
       quiz_id: quizId,
       quiz_question: String(q.question),
-      correct_answer: String(q.correct_answer),
+      correct_answer: String(q.correct_answer || ""),
     }));
 
     const res = await fetch(`${API_BASE}/api/questions/batch`, {
@@ -119,9 +119,9 @@ export const quizApi = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        question_id: questionId,
-        answer,
-        is_correct: isCorrect,
+        question_id: String(questionId),
+        answer: String(answer || ""),
+        is_correct: Boolean(isCorrect),
       }),
     });
     if (!res.ok) throw new Error("Failed to save answer");
@@ -129,7 +129,7 @@ export const quizApi = {
   },
 
   // Complete quiz (update score and finish status)
-  completeQuiz: async (quizId: string, score: number) => {
+  completeQuiz: async (quizId: string, score: number) => { 
     const res = await fetch(`${API_BASE}/api/quizzes/${quizId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
