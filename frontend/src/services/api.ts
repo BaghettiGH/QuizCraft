@@ -91,8 +91,8 @@ export const quizApi = {
         no_of_questions: numberOfQuestions,
       }),
     });
-    const errorData = await res.text();
-    if (!res.ok) throw new Error("Failed to create quiz", { cause: errorData});
+  
+    if (!res.ok) throw new Error("Failed to create quiz");
     return res.json();
   },
 
@@ -100,8 +100,8 @@ export const quizApi = {
   storeQuestions: async (quizId: string, questions: QuizQuestion[]) => {
     const questionsData = questions.map(q => ({
       quiz_id: quizId,
-      quiz_question: q.question,
-      correct_answer: q.correct_answer,
+      quiz_question: String(q.question),
+      correct_answer: String(q.correct_answer),
     }));
 
     const res = await fetch(`${API_BASE}/api/questions/batch`, {
