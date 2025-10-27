@@ -1,5 +1,7 @@
-import { Plus, MessageSquare, Trash2, Loader2 } from "lucide-react";
+import { Plus, MessageSquare, Trash2, Loader2, User as UserIcon, LogOut, BarChart3 } from "lucide-react";
 import { SidebarProps} from "../types/types";
+import { useAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export const Sidebar = ({
   sessions,
@@ -8,9 +10,29 @@ export const Sidebar = ({
   onSelectSession,
   onCreateSession,
   onDeleteSession,
-}: SidebarProps) => (
+}: SidebarProps) => {
+  const { user, logout } = useAuth();
+  const router = useRouter();
+  
+  const handleProgressClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    router.push('/progress');
+  };
+  
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await logout();
+      // Optionally redirect to login page after logout
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+  
+  return (
   <div className="flex flex-col h-full">
-    <div className="p-4 border-b border-blue-500/20">
+    <div className="space-y-2 p-4 border-b border-blue-500/20">
       <button
         onClick={(e) => {
           e.stopPropagation();
@@ -20,6 +42,13 @@ export const Sidebar = ({
       >
         <Plus className="w-5 h-5" />
         <span>New Chat</span>
+      </button>
+      <button
+        onClick={handleProgressClick}
+        className="w-full text-blue-100 hover:bg-blue-500/20 py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all border border-blue-500/30"
+      >
+        <BarChart3 className="w-5 h-5" />
+        <span>My Progress</span>
       </button>
     </div>
 
@@ -64,5 +93,27 @@ export const Sidebar = ({
         ))
       )}
     </div>
-  </div>
-);
+    
+    {/* User Info Section */}
+    {user && (
+      <div className="p-4 border-t border-blue-500/20">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-2 text-sm text-blue-200/80 flex-1 min-w-0">
+            <UserIcon className="w-4 h-4 flex-shrink-0" />
+            <span className="truncate">
+              {user.first_name} {user.last_name}
+            </span>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="text-blue-300/70 hover:text-blue-100 hover:bg-blue-600/30 p-1.5 rounded-md transition-colors"
+            title="Log out"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    )}
+    </div>
+  );
+};
