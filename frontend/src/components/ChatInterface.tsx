@@ -1,5 +1,6 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Menu, X, Sparkles } from "lucide-react";
 import { Sidebar } from "../components/Sidebar";
 import { MessageList } from "../components/MessageList";
@@ -10,7 +11,11 @@ import { messageApi, aiApi } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import QuizComponent from "./QuizComponent";
 
-export default function ChatInterface() {
+interface ChatInterfaceProps {
+  initialSessionId?: string;
+}
+
+export default function ChatInterface({ initialSessionId }: ChatInterfaceProps) {
   const { user } = useAuth();
   const userId = user?.id;
   const [input, setInput] = useState("");
@@ -18,10 +23,14 @@ export default function ChatInterface() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [currentSessionId, setCurrentSessionId] = useState<string>(initialSessionId || '');
+
   const {
     sessions,
-    currentSessionId,
-    setCurrentSessionId,
+    currentSessionId: _currentSessionId,
+    setCurrentSessionId: _setCurrentSessionId,
     loading: sessionsLoading,
     createSession,
     deleteSession,
@@ -33,6 +42,18 @@ export default function ChatInterface() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Handle initial session and URL updates
+  useEffect(() => {
+    // If we have an initialSessionId from props, use it
+    if (initialSessionId && initialSessionId !== currentSessionId) {
+      setCurrentSessionId(initialSessionId);
+    } 
+    // Otherwise, set the first session as current if no session is selected
+    else if (sessions.length > 0 && !currentSessionId) {
+      setCurrentSessionId(sessions[0].session_id);
+    }
+  }, [sessions, currentSessionId, initialSessionId]);
 
   const handleSend = async () => {
     if (!input.trim() || loading) return;
@@ -62,15 +83,15 @@ export default function ChatInterface() {
       const data = await aiApi.explain(updatedMessages);
       
       const assistantMessage = {
-      role: "assistant" as const,
-      content: data.answer,
-      quiz: data.quiz ? { 
-        questions: data.quiz,
-        topic: data.quiz_topic || "this topic",
-        sessionId: sessionId ?? undefined // ADD THIS - pass the current session ID
-      } : undefined,
-    };
-    console.log("assistantMessage", assistantMessage);
+        role: "assistant" as const,
+        content: data.answer,
+        quiz: data.quiz ? { 
+          questions: data.quiz,
+          topic: data.quiz_topic || "this topic",
+          sessionId: sessionId ?? undefined // ADD THIS - pass the current session ID
+        } : undefined,
+      };
+      console.log("assistantMessage", assistantMessage);
       await messageApi.create(
         sessionId!,
         "assistant",
@@ -97,6 +118,15 @@ export default function ChatInterface() {
     }
   };
 
+  const handleSelectSession = useCallback((sessionId: string) => {
+    if (sessionId !== currentSessionId) {
+      setCurrentSessionId(sessionId);
+      // Update the URL when a session is selected
+      const newUrl = `/chat?sessionId=${sessionId}`;
+      router.replace(newUrl, { scroll: false });
+    }
+  }, [currentSessionId, router]);
+
   return (
     <div className="flex h-screen" style={{ backgroundColor: '#0E0E21' }}>
       <div className={`${sidebarOpen ? 'w-80' : 'w-0'} transition-all duration-300 border-r border-blue-500/20 overflow-hidden`}>
@@ -104,7 +134,7 @@ export default function ChatInterface() {
           sessions={sessions}
           currentSessionId={currentSessionId}
           loading={sessionsLoading}
-          onSelectSession={setCurrentSessionId}
+          onSelectSession={handleSelectSession}
           onCreateSession={createSession}
           onDeleteSession={handleDeleteSession}
         />
