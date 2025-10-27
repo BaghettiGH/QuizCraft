@@ -11,6 +11,8 @@ interface Quiz {
   status: string;
   score: number | null;
   total_questions: number | null;
+  difficulty?: string;
+  category?: string;
 }
 
 interface Chat {
@@ -45,12 +47,12 @@ export default function ProgressList() {
     fetchChats();
   }, []);
 
-  // Fetch quizzes from Supabase
+  // Fetch quizzes from Supabase Quiz table
   useEffect(() => {
     async function fetchQuizzes() {
       setLoading(true);
       const { data, error } = await supabase
-        .from('quizzes')
+        .from('Quiz')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -93,14 +95,18 @@ export default function ProgressList() {
                 Chats
               </h3>
               <div className="space-y-1">
-                {chats.map((chat, idx) => (
-                  <button
-                    key={idx}
-                    className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-800 rounded-lg transition-colors"
-                  >
-                    {chat.name}
-                  </button>
-                ))}
+                {chats.length > 0 ? (
+                  chats.map((chat) => (
+                    <button
+                      key={chat.id}
+                      className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-800 rounded-lg transition-colors"
+                    >
+                      {String(chat.name)}
+                    </button>
+                  ))
+                ) : (
+                  <p className="text-xs text-gray-500 px-3">No chats yet</p>
+                )}
               </div>
             </div>
           </div>
@@ -127,7 +133,7 @@ export default function ProgressList() {
           className="md:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800 rounded-lg"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
 
@@ -139,7 +145,7 @@ export default function ProgressList() {
           <div className="flex items-center gap-4 mb-6">
             <div className="flex-1 relative">
               <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
                 type="text"
@@ -152,7 +158,7 @@ export default function ProgressList() {
             
             <button className="flex items-center gap-2 px-6 py-3 border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
               <span>Filter</span>
             </button>
@@ -164,7 +170,7 @@ export default function ProgressList() {
                 className={`p-2 rounded ${viewMode === 'list' ? 'bg-gray-700' : 'hover:bg-gray-800'} transition-colors`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
               <button
@@ -172,7 +178,7 @@ export default function ProgressList() {
                 className={`p-2 rounded ${viewMode === 'grid' ? 'bg-gray-700' : 'hover:bg-gray-800'} transition-colors`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
                 </svg>
               </button>
               <button
@@ -180,7 +186,7 @@ export default function ProgressList() {
                 className={`p-2 rounded ${viewMode === 'calendar' ? 'bg-gray-700' : 'hover:bg-gray-800'} transition-colors`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </button>
             </div>
@@ -189,12 +195,59 @@ export default function ProgressList() {
 
         {/* Content Area */}
         <div className="flex-1 px-8 pb-8 overflow-y-auto">
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center text-gray-500">
-              <p className="text-lg">No quizzes found</p>
-              <p className="text-sm mt-2">Try adjusting your search or filters</p>
+          {loading ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center text-gray-500">
+                <p className="text-lg">Loading quizzes...</p>
+              </div>
             </div>
-          </div>
+          ) : filteredQuizzes.length > 0 ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {filteredQuizzes.map((quiz) => (
+                <div
+                  key={quiz.id}
+                  className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors cursor-pointer"
+                >
+                  <h3 className="text-lg font-semibold mb-2">{quiz.title}</h3>
+                  {quiz.description && (
+                    <p className="text-sm text-gray-400 mb-4">{quiz.description}</p>
+                  )}
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {quiz.category && (
+                      <span className="text-xs px-2 py-1 bg-blue-900 text-blue-200 rounded">
+                        {quiz.category}
+                      </span>
+                    )}
+                    {quiz.difficulty && (
+                      <span className="text-xs px-2 py-1 bg-purple-900 text-purple-200 rounded">
+                        {quiz.difficulty}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <span className="px-2 py-1 bg-gray-700 rounded">
+                      {quiz.status}
+                    </span>
+                    {quiz.score !== null && quiz.total_questions !== null && (
+                      <span>
+                        Score: {quiz.score}/{quiz.total_questions}
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-3 text-xs text-gray-500">
+                    {new Date(quiz.created_at).toLocaleDateString()}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center text-gray-500">
+                <p className="text-lg">No quizzes found</p>
+                <p className="text-sm mt-2">Try adjusting your search or filters</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
