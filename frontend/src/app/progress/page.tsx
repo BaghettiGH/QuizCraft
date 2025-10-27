@@ -1,15 +1,75 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../../lib/supabase';
+
+interface Quiz {
+  id: string;
+  title: string;
+  description: string;
+  created_at: string;
+  status: string;
+  score: number | null;
+  total_questions: number | null;
+}
+
+interface Chat {
+  id: string;
+  name: string;
+  created_at: string;
+}
 
 export default function ProgressList() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [viewMode, setViewMode] = useState<'list' | 'grid' | 'calendar'>('list');
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const chats: string[] = [
-    'Example Chat Placeholder'
-  ];
+  // Fetch chats from Supabase
+  useEffect(() => {
+    async function fetchChats() {
+      const { data, error } = await supabase
+        .from('chats')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching chats:', error);
+      } else {
+        setChats(data || []);
+      }
+    }
+
+    fetchChats();
+  }, []);
+
+  // Fetch quizzes from Supabase
+  useEffect(() => {
+    async function fetchQuizzes() {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('quizzes')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching quizzes:', error);
+      } else {
+        setQuizzes(data || []);
+      }
+      setLoading(false);
+    }
+
+    fetchQuizzes();
+  }, []);
+
+  // Filter quizzes based on search query
+  const filteredQuizzes = quizzes.filter(quiz =>
+    quiz.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    quiz.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
@@ -38,7 +98,7 @@ export default function ProgressList() {
                     key={idx}
                     className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-800 rounded-lg transition-colors"
                   >
-                    {chat}
+                    {chat.name}
                   </button>
                 ))}
               </div>
