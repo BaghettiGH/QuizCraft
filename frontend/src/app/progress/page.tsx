@@ -5,12 +5,12 @@ import { supabase } from '../../lib/supabase';
 
 interface Quiz {
   id: string;
-  title: string;
-  description: string;
-  created_at: string;
-  status: string;
-  score: number | null;
-  total_questions: number | null;
+  title?: string;
+  description?: string;
+  created_at?: string;
+  status?: string;
+  score?: number | null;
+  total_questions?: number | null;
   difficulty?: string;
   category?: string;
 }
@@ -53,8 +53,7 @@ export default function ProgressList() {
       setLoading(true);
       const { data, error } = await supabase
         .from('Quiz')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('*');
 
       if (error) {
         console.error('Error fetching quizzes:', error);
@@ -67,10 +66,10 @@ export default function ProgressList() {
     fetchQuizzes();
   }, []);
 
-  // Filter quizzes based on search query
+  // Filter quizzes based on search query - FIXED VERSION
   const filteredQuizzes = quizzes.filter(quiz =>
-    quiz.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    quiz.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    (quiz.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (quiz.description || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -208,7 +207,7 @@ export default function ProgressList() {
                   key={quiz.id}
                   className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors cursor-pointer"
                 >
-                  <h3 className="text-lg font-semibold mb-2">{quiz.title}</h3>
+                  <h3 className="text-lg font-semibold mb-2">{quiz.title || 'Untitled Quiz'}</h3>
                   {quiz.description && (
                     <p className="text-sm text-gray-400 mb-4">{quiz.description}</p>
                   )}
@@ -226,7 +225,7 @@ export default function ProgressList() {
                   </div>
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <span className="px-2 py-1 bg-gray-700 rounded">
-                      {quiz.status}
+                      {quiz.status || 'draft'}
                     </span>
                     {quiz.score !== null && quiz.total_questions !== null && (
                       <span>
@@ -234,9 +233,11 @@ export default function ProgressList() {
                       </span>
                     )}
                   </div>
-                  <div className="mt-3 text-xs text-gray-500">
-                    {new Date(quiz.created_at).toLocaleDateString()}
-                  </div>
+                  {quiz.created_at && (
+                    <div className="mt-3 text-xs text-gray-500">
+                      {new Date(quiz.created_at).toLocaleDateString()}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
