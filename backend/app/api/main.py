@@ -3,12 +3,12 @@ from fastapi import FastAPI
 # from app.api import ai, explain
 from fastapi.middleware.cors import CORSMiddleware
 # from fastapi.responses import FileResponse
-# from fastapi.responses import Response
+from fastapi.responses import Response
 # from mangum import Mangum
 
 
 app = FastAPI(title="QuizCraft API")
-# favicon_path = 'favicon.ico'
+favicon_path = 'favicon.ico'
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
@@ -23,10 +23,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# @app.get("/favicon.ico", include_in_schema=False)
-# @app.get("/favicon.png", include_in_schema=False)
-# async def favicon():
-#     return Response(status_code=204)
+@app.get("/favicon.ico", include_in_schema=False)
+@app.get("/favicon.png", include_in_schema=False)
+async def favicon():
+    return Response(status_code=204)
 
 @app.get("/")
 async def root():
