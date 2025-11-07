@@ -24,7 +24,7 @@ export interface QuizResult {
 export interface QuizData {
   questions: any[];
   topic: string;
-  sessionId?: string;  
+  sessionId: string | null;  
 }
 
 export interface Message {
