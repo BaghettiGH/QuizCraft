@@ -10,6 +10,7 @@ origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "https://quiz-craft-azure.vercel.app",
+    "https://quiz-craft-api.vercel.app",
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -36,6 +37,7 @@ app.include_router(quiz.router)
 app.include_router(question.router)
 app.include_router(user_answer.router)
 app.include_router(auth.router)
+
 @app.get("/")
 async def root():
     return {"message": "QuizCraft API is running"}
