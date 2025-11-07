@@ -1,9 +1,9 @@
 from fastapi import FastAPI
-from app.api import users, message, progress, question, quiz, study_material, user_answer, sessions, auth
-from app.api import ai, explain
+# from app.api import users, message, progress, question, quiz, study_material, user_answer, sessions, auth
+# from app.api import ai, explain
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
-from fastapi.responses import Response
+# from fastapi.responses import FileResponse
+# from fastapi.responses import Response
 from mangum import Mangum
 
 
