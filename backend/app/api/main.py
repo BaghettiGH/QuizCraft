@@ -23,24 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
-app.include_router(sessions.router, prefix="/api", tags=["chat_sessions"])
-app.include_router(message.router, prefix="/api", tags=["messages"])
-app.include_router(progress.router, prefix="/api", tags=["progress"])
-app.include_router(question.router, prefix="/api", tags=["question"])
-app.include_router(study_material.router, prefix="/api", tags=["study_material"])
-app.include_router(user_answer.router, prefix="/api", tags=["answer"])
-app.include_router(users.router, prefix="/api", tags=["users"])
-app.include_router(ai.router, prefix="/ai", tags=["AI"])
-app.include_router(explain.router, prefix="/ai", tags=["AI Explain"])
-app.include_router(sessions.router)
-app.include_router(message.router)
-app.include_router(quiz.router)
-app.include_router(question.router)
-app.include_router(user_answer.router)
-app.include_router(auth.router)
-
 @app.get("/favicon.ico", include_in_schema=False)
 @app.get("/favicon.png", include_in_schema=False)
 async def favicon():
@@ -64,6 +46,26 @@ async def debug_config():
         "google_api_key": "SET" if settings.GOOGLE_API_KEY else "MISSING",
         "env": settings.ENV
     }
+
+
+
+
+app.include_router(sessions.router, prefix="/api", tags=["chat_sessions"])
+app.include_router(message.router, prefix="/api", tags=["messages"])
+app.include_router(progress.router, prefix="/api", tags=["progress"])
+app.include_router(question.router, prefix="/api", tags=["question"])
+app.include_router(study_material.router, prefix="/api", tags=["study_material"])
+app.include_router(user_answer.router, prefix="/api", tags=["answer"])
+app.include_router(users.router, prefix="/api", tags=["users"])
+app.include_router(ai.router, prefix="/ai", tags=["AI"])
+app.include_router(explain.router, prefix="/ai", tags=["AI Explain"])
+app.include_router(sessions.router)
+app.include_router(message.router)
+app.include_router(quiz.router)
+app.include_router(question.router)
+app.include_router(user_answer.router)
+app.include_router(auth.router)
+
 
 
 handler = Mangum(app)
