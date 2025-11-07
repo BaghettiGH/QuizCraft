@@ -1,27 +1,27 @@
 from fastapi import FastAPI
 # from app.api import users, message, progress, question, quiz, study_material, user_answer, sessions, auth
 # from app.api import ai, explain
-from fastapi.middleware.cors import CORSMiddleware
+# from fastapi.middleware.cors import CORSMiddleware
 # from fastapi.responses import FileResponse
 # from fastapi.responses import Response
-from mangum import Mangum
+# from mangum import Mangum
 
 
 app = FastAPI(title="QuizCraft API")
 # favicon_path = 'favicon.ico'
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://quiz-craft-azure.vercel.app",
-    "https://quiz-craft-api.vercel.app",
-]
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# origins = [
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+#     "https://quiz-craft-azure.vercel.app",
+#     "https://quiz-craft-api.vercel.app",
+# ]
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 # @app.get("/favicon.ico", include_in_schema=False)
 # @app.get("/favicon.png", include_in_schema=False)
@@ -68,4 +68,4 @@ async def health():
 
 
 
-handler = Mangum(app)
+# handler = Mangum(app)
