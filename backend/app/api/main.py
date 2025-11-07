@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 
 
 app = FastAPI(title="QuizCraft API")
-favicon_path = 'backend/app/static/favicon.ico'
+favicon_path = 'favicon.ico'
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
