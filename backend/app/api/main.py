@@ -42,9 +42,9 @@ app.include_router(user_answer.router)
 app.include_router(auth.router)
 
 @app.get("/favicon.png")
-@app.get("/favicon.ico")
+@app.get('/favicon.ico', include_in_schema=False)
 async def favicon():
-    return Response(status_code=204)
+    return FileResponse(favicon_path)
 @app.get("/")
 async def root():
     return {"message": "QuizCraft API is running"}
