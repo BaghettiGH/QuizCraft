@@ -37,15 +37,15 @@ async def root():
 async def health():
     return {"status": "healthy"}
 
-# @app.get("/debug/config")
-# async def debug_config():
-#     from app.core.config import settings
-#     return {
-#         "supabase_url": settings.SUPABASE_URL[:20] + "..." if settings.SUPABASE_URL else "MISSING",
-#         "supabase_key": "SET" if settings.SUPABASE_KEY else "MISSING",
-#         "google_api_key": "SET" if settings.GOOGLE_API_KEY else "MISSING",
-#         "env": settings.ENV
-#     }
+@app.get("/debug/config")
+async def debug_config():
+    from app.core.config import settings
+    return {
+        "supabase_url": settings.SUPABASE_URL[:20] + "..." if settings.SUPABASE_URL else "MISSING",
+        "supabase_key": "SET" if settings.SUPABASE_KEY else "MISSING",
+        "google_api_key": "SET" if settings.GOOGLE_API_KEY else "MISSING",
+        "env": settings.ENV
+    }
 
 
 
