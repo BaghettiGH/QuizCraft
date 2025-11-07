@@ -11,5 +11,5 @@ python-dotenv==1.0.1
 supabase
 pydantic-settings
 google-generativeai
-mangum
+mangum>=-0.14.0
 
