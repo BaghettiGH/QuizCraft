@@ -14,6 +14,7 @@ origins = [
     "http://127.0.0.1:3000",
     "https://quiz-craft-azure.vercel.app",
     "https://quiz-craft-api.vercel.app",
+    "https://quizcraft-api.onrender.com",
 ]
 app.add_middleware(
     CORSMiddleware,

@@ -7,7 +7,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://quiz-craft-api.vercel.app";
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://quiz-craft-api.vercel.app" || "https://quizcraft-api.onrender.com";
   useEffect(() => {
     checkAuth();
   }, []);
