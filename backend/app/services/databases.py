@@ -5,8 +5,8 @@ from app.core.config import settings
 
 class DatabaseService:
     def __init__(self):
-        url = settings.SUPABASE_URL
-        key = settings.SUPABASE_KEY
+        url = settings.NEXT_PUBLIC_SUPABASE_URL
+        key = settings.NEXT_PUBLIC_SUPABASE_ANON_KEY
         self.client: Client = create_client(url, key)
     
     # ===== SESSION METHODS =====

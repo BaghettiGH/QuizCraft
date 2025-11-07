@@ -86,7 +86,8 @@ async def get_quiz_by_session(session_id: str):
 
         quiz = response.data[0]
         return {"quiz": quiz}
-
+    except HTTPException:
+        raise
     except Exception as e:
         import traceback
         print(f"Error fetching quiz by session: {e}")
