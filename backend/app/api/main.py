@@ -4,6 +4,7 @@ from app.api import ai, explain
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.responses import Response
+from mangum import Mangum
 
 
 app = FastAPI(title="QuizCraft API")
@@ -40,10 +41,6 @@ app.include_router(question.router)
 app.include_router(user_answer.router)
 app.include_router(auth.router)
 
-
-
-
-
 @app.get("/favicon.png")
 @app.get("/favicon.ico")
 async def favicon():
@@ -51,3 +48,6 @@ async def favicon():
 @app.get("/")
 async def root():
     return {"message": "QuizCraft API is running"}
+
+
+handler = Mangum(app)
