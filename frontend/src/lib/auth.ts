@@ -1,6 +1,6 @@
 import { LoginCredentials, AuthResponse, ErrorResponse } from '../types/types';
 
-const API_BASE_URL ='https://quiz-craft-api.vercel.app';
+const API_BASE_URL =process.env.NEXT_PUBLIC_API_BASE_URL || "https://quiz-craft-api.vercel.app";
 
 export class AuthService {
   static async login(credentials: LoginCredentials): Promise<AuthResponse> {

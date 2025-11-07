@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str | None = None
     GOOGLE_API_KEY: str | None = None
     ENV: str = "development"
+    NEXT_PUBLIC_API_BASE_URL: str | None = None
     class Config:
         env_file = ".env"
 

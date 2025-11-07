@@ -41,13 +41,19 @@ app.include_router(question.router)
 app.include_router(user_answer.router)
 app.include_router(auth.router)
 
-@app.get("/favicon.png")
-@app.get('/favicon.ico', include_in_schema=False)
+@app.get("/favicon.ico", include_in_schema=False)
+@app.get("/favicon.png", include_in_schema=False)
 async def favicon():
-    return FileResponse(favicon_path)
+    return Response(status_code=204)
+
 @app.get("/")
 async def root():
     return {"message": "QuizCraft API is running"}
+
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy"}
 
 
 handler = Mangum(app)
