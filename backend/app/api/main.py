@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 # from fastapi.responses import FileResponse
 from fastapi.responses import Response
-# from mangum import Mangum
+from mangum import Mangum
 
 
 app = FastAPI(title="QuizCraft API")
@@ -68,4 +68,4 @@ async def debug_config():
 
 
 
-# handler = Mangum(app)
+handler = Mangum(app)
