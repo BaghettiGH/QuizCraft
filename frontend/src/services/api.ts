@@ -1,7 +1,7 @@
 import { Message } from "../types/types";
 import { QuizQuestion } from "../types/types";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = "https://quiz-craft-api.vercel.app";
 
 export const sessionApi = {
   list: async (userAuthId: string) => {
