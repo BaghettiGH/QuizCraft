@@ -2,8 +2,11 @@ services:
   - type: web
     name: quizcraft-api
     env: python
+    runtime: python-3.11
     buildCommand: |
       export CARGO_HOME=/tmp/cargo
+      export CARGO_TARGET_DIR=/tmp/cargo-target
+      mkdir -p /tmp/cargo/registry /tmp/cargo-target
       pip install --upgrade pip
       pip install -r requirements.txt
-    startCommand: uvicorn app.api.main:app --host
+    startCommand: uvicorn app.api.main:app --host 0.0.0.0 --port ${PORT:-10000}
