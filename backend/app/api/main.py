@@ -3,6 +3,7 @@ from app.api import users, message, progress, question, quiz, study_material, us
 from app.api import ai, explain
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.responses import Response
 
 
 app = FastAPI(title="QuizCraft API")
@@ -41,10 +42,12 @@ app.include_router(auth.router)
 
 
 
-@app.get('/favicon.ico', include_in_schema=False)
-async def favicon():
-    return FileResponse(favicon_path)
 
+
+@app.get("/favicon.png")
+@app.get("/favicon.ico")
+async def favicon():
+    return Response(status_code=204)
 @app.get("/")
 async def root():
     return {"message": "QuizCraft API is running"}
