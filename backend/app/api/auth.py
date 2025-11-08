@@ -50,9 +50,12 @@ async def signup(credentials: SignupRequest):
             "email": credentials.email,
             "password": credentials.password
         })
+        if not auth_response.user:
+            raise HTTPException(status_code=400, detail="Failed to create auth user")
         
         # Create user profile in User table
         user_profile = db.create_user_profile(
+            user_id=auth_response.user.id,
             email=credentials.email,
             first_name=credentials.first_name,
             last_name=credentials.last_name
