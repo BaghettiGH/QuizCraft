@@ -189,6 +189,7 @@ class DatabaseService:
     def create_user_profile(self, user_id: str, email: str, first_name: str, last_name: str) -> dict:
         """Create user profile in User table after signup"""
         data = {
+            "user_id": user_id,
             "email": email,
             "first_name": first_name,
             "last_name": last_name
